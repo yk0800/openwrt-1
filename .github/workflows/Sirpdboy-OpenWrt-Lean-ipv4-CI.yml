@@ -44,7 +44,7 @@ jobs:
      - name: Prepare Package
        run: |
         cd openwrt
-        cp -r ../scripts/update_package.sh ./ && /bin/bash update_package.py
+        cp -r ../scripts/update_package.sh ./ && /bin/bash update_package.sh
         chmod -R 755 ./
         df -h
      - name: Generate configuration file
