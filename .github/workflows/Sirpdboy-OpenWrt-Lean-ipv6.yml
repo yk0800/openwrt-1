@@ -187,7 +187,7 @@ jobs:
         cat >> .config <<EOF
         CONFIG_PACKAGE_curl=y
         CONFIG_PACKAGE_htop=y
-        CONFIG_PACKAGE_screen=y
+        CONFIG_PACKAGE_screen=m
         CONFIG_PACKAGE_wget=y
         EOF
         # 常用驱动:
