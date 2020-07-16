@@ -89,9 +89,9 @@ jobs:
         CONFIG_TARGET_x86_64_DEVICE_generic=y
         EOF
         # 固件压缩:
-        cat >> .config <<EOF
-        CONFIG_TARGET_IMAGES_GZIP=y
-        EOF        
+        # cat >> .config <<EOF
+        # CONFIG_TARGET_IMAGES_GZIP=y
+        # EOF        
         # 取消编译VMware镜像: 
         # cat >> .config <<EOF
         # CONFIG_VMDK_IMAGES is not set
@@ -218,21 +218,8 @@ jobs:
         CONFIG_PACKAGE_kmod-rtl8812au-ct=y
         CONFIG_PACKAGE_kmod-rtl8821ae=y
         CONFIG_PACKAGE_kmod-rtl8xxxu=y
-        CONFIG_PACKAGE_kmod-rtlwifi=y
-        CONFIG_PACKAGE_kmod-rtlwifi-btcoexist=y
-        CONFIG_PACKAGE_kmod-rtlwifi-pci=y
-        CONFIG_PACKAGE_kmod-rtlwifi-usb=y
         CONFIG_PACKAGE_kmod-rtw88=y
         CONFIG_PACKAGE_kmod-lib80211=y
-        CONFIG_PACKAGE_iwl3945-firmware=y
-        CONFIG_PACKAGE_iwl4965-firmware=y
-        CONFIG_PACKAGE_kmod-ipw2200=y
-        CONFIG_PACKAGE_kmod-iwl-legacy=y
-        CONFIG_PACKAGE_kmod-iwl3945=y
-        CONFIG_PACKAGE_kmod-iwl4965=y
-        CONFIG_PACKAGE_kmod-libipw=y
-        CONFIG_PACKAGE_kmod-mac80211-hwsim=y
-        CONFIG_PACKAGE_kmod-iwlwifi=y
         EOF
         # 
         # ========================固件定制部分结束========================
@@ -257,16 +244,15 @@ jobs:
           make -j1 V=s     
      - name: Prepare artifact
        run: |
-        find  ./openwrt/bin/targets/ -type f -name "*rootfs*" | xargs rm -rf {}
-        cd ./openwrt/bin/targets/*/*
-        rm -rf `ls | grep -v "squashfs"`
-        df -h
+        rm -rf ./Firmware/
+        mkdir -p ./Firmware/
+        find openwrt/bin/targets/ -name "*sysupgrade*bin*" | xargs -i mv -f {} ./Firmware/
+        find openwrt/bin/targets/ -name "*combined*img*" | xargs -i mv -f {} ./Firmware/
      - name: Upload firmware
        uses: actions/upload-artifact@master
        with:
           name: SirpdboyOpenWrt-IPV6-Firmware
-          path: ./openwrt/bin/targets/
-          
+          path: ./Firmware/
      - name: Upload  IPK
        uses: actions/upload-artifact@master
        with:
