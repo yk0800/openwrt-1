@@ -141,7 +141,7 @@ jobs:
         CONFIG_PACKAGE_luci-app-control-timewol=y
         CONFIG_PACKAGE_luci-app-control-webrestriction=y
         CONFIG_PACKAGE_luci-app-control-weburl=y
-        CONFIG_PACKAGE_luci-app-cpulimit=y
+        CONFIG_PACKAGE_luci-app-cpulimit=m
         CONFIG_PACKAGE_luci-app-eqos=y
         CONFIG_PACKAGE_luci-app-filetransfer=y
         CONFIG_PACKAGE_luci-app-frpc=m
@@ -151,7 +151,7 @@ jobs:
         CONFIG_PACKAGE_luci-app-minidlna=m
         CONFIG_PACKAGE_luci-app-mwan3=y
         CONFIG_PACKAGE_luci-app-netdata=y
-        CONFIG_PACKAGE_luci-app-oaf=m
+        CONFIG_PACKAGE_luci-app-oaf=y
         CONFIG_PACKAGE_luci-app-openclash=y
         CONFIG_PACKAGE_luci-app-passwall=y
         CONFIG_PACKAGE_luci-app-qbittorrent=m
@@ -168,7 +168,7 @@ jobs:
         EOF
         # LuCI主题:
         cat >> .config <<EOF
-        CONFIG_PACKAGE_luci-theme-argon=m
+        CONFIG_PACKAGE_luci-theme-argon=y
         CONFIG_PACKAGE_luci-theme-opentomcat=y
         CONFIG_PACKAGE_luci-theme-btmod=m
         EOF
@@ -176,50 +176,6 @@ jobs:
         cat >> .config <<EOF
         CONFIG_PACKAGE_curl=y
         CONFIG_PACKAGE_wget=y
-        EOF
-        # 常用驱动:
-        cat >> .config <<EOF
-        CONFIG_PACKAGE_kmod-usb-net-huawei-cdc-ncm=y
-        CONFIG_PACKAGE_kmod-vmxnet3=y
-        CONFIG_PACKAGE_kmod-igbvf=y
-        CONFIG_PACKAGE_kmod-ixgbe=y
-        CONFIG_PACKAGE_kmod-pcnet32=y
-        CONFIG_PACKAGE_kmod-r8125=y
-        CONFIG_PACKAGE_kmod-r8168=y
-        CONFIG_PACKAGE_kmod-i40e=y
-        CONFIG_PACKAGE_kmod-i40evf=y
-        CONFIG_PACKAGE_kmod-usb-net=y
-        CONFIG_PACKAGE_kmod-usb-net-rtl8150=y
-        CONFIG_PACKAGE_kmod-usb-net-rtl8152=y
-        CONFIG_PACKAGE_kmod-usb-net-asix-ax88179=y
-        CONFIG_PACKAGE_kmod-r8169=y
-        CONFIG_PACKAGE_kmod-rt73-usb=y
-        CONFIG_PACKAGE_kmod-rtl8180=y
-        CONFIG_PACKAGE_kmod-rtl8187=y
-        CONFIG_PACKAGE_kmod-rtl8192c-common=y
-        CONFIG_PACKAGE_kmod-rtl8192ce=y
-        CONFIG_PACKAGE_kmod-rtl8192cu=y
-        CONFIG_PACKAGE_kmod-rtl8192de=y
-        CONFIG_PACKAGE_kmod-rtl8192se=y
-        CONFIG_PACKAGE_kmod-rtl8723bs=y
-        CONFIG_PACKAGE_kmod-rtl8812au-ct=y
-        CONFIG_PACKAGE_kmod-rtl8821ae=y
-        CONFIG_PACKAGE_kmod-rtl8xxxu=y
-        CONFIG_PACKAGE_kmod-rtlwifi=y
-        CONFIG_PACKAGE_kmod-rtlwifi-btcoexist=y
-        CONFIG_PACKAGE_kmod-rtlwifi-pci=y
-        CONFIG_PACKAGE_kmod-rtlwifi-usb=y
-        CONFIG_PACKAGE_kmod-rtw88=y
-        CONFIG_PACKAGE_kmod-lib80211=y
-        CONFIG_PACKAGE_iwl3945-firmware=y
-        CONFIG_PACKAGE_iwl4965-firmware=y
-        CONFIG_PACKAGE_kmod-ipw2200=y
-        CONFIG_PACKAGE_kmod-iwl-legacy=y
-        CONFIG_PACKAGE_kmod-iwl3945=y
-        CONFIG_PACKAGE_kmod-iwl4965=y
-        CONFIG_PACKAGE_kmod-libipw=y
-        CONFIG_PACKAGE_kmod-mac80211-hwsim=y
-        CONFIG_PACKAGE_kmod-iwlwifi=y
         EOF
         # 
         # ========================固件定制部分结束========================
@@ -231,19 +187,18 @@ jobs:
         df -h
         cd openwrt
         make download -j8
-        find ./dl/ -size -1024c -exec rm -f {} \;
-     - name: Compile Openwrt
+        find dl -size -1024c -exec ls -l {} \;
+        find dl -size -1024c -exec rm -f {} \;
+     - name: Multi-thread  Compile Openwrt
        run: |
-        cd openwrt
-        make -j$(($(nproc) + 1)) V=s
-        echo "======================="
-        echo "Space usage:"
-        echo "======================="
-        df -h
-        echo "======================="
-        du -h --max-depth=1 ./ --exclude=build_dir --exclude=bin
-        du -h --max-depth=1 ./build_dir
-        du -h --max-depth=1 ./bin
+          cd openwrt
+          echo -e "$(nproc) thread build."
+          make -j$(nproc) V=s
+     - name: Single-thread  Compile Openwrt
+       if: failure()
+       run: |
+          cd openwrt
+          make -j1 V=s  
      - name: Prepare artifact
        run: |
         find  ./openwrt/bin/targets/ -type f -name "*rootfs*" | xargs rm -rf {}
