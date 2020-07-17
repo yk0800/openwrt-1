@@ -205,7 +205,9 @@ jobs:
         mkdir -p ./Firmware/
         find openwrt/bin/targets/ -name "*sysupgrade*bin*" | xargs -i mv -f {} ./Firmware/
         find openwrt/bin/targets/ -name "*combined*img*" | xargs -i mv -f {} ./Firmware/
-     - name: Upload firmware
+        cd ./Firmware
+        gzip *.img
+     - name: Upload Firmware
        uses: actions/upload-artifact@master
        with:
           name: SirpdboyOpenWrt-IPV4-mini-Firmware
