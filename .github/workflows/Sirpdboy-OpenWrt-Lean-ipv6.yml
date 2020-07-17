@@ -26,7 +26,7 @@ jobs:
        with:
           ref: master
 
-     - name: Init build
+     - name: Init Build
        env:
         DEBIAN_FRONTEND: noninteractive
        run: |
@@ -37,7 +37,7 @@ jobs:
         sudo -E apt-get autoremove -y --purge
         sudo -E apt-get clean -y
         sudo -E rm -rf /usr/share/dotnet /etc/mysql /etc/php
-     - name: Prepare openwrt
+     - name: Prepare Openwrt
        run: |
         sudo chown -R runner:runner /home/runner/work/openwrt
         cp -r ./scripts/Ready_download.sh ./  &&/bin/bash Ready_download.sh
@@ -47,7 +47,7 @@ jobs:
         cp -r ../scripts/update_package.sh ./ &&/bin/bash update_package.sh
         chmod -R 755 ./
         df -h
-     - name: Generate configuration file
+     - name: Generate Configuration File
        run: |
         cd openwrt
         # 修改LAN的IP地址
@@ -242,13 +242,15 @@ jobs:
        run: |
           cd openwrt
           make -j1 V=s     
-     - name: Prepare artifact
+     - name: Prepare Artifact
        run: |
         rm -rf ./Firmware/
         mkdir -p ./Firmware/
         find openwrt/bin/targets/ -name "*sysupgrade*bin*" | xargs -i mv -f {} ./Firmware/
         find openwrt/bin/targets/ -name "*combined*img*" | xargs -i mv -f {} ./Firmware/
-     - name: Upload firmware
+        cd ./Firmware
+        gzip *.img
+     - name: Upload Firmware
        uses: actions/upload-artifact@master
        with:
           name: SirpdboyOpenWrt-IPV6-Firmware
