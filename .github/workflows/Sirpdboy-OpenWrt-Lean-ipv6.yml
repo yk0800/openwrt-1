@@ -132,6 +132,8 @@ jobs:
         CONFIG_PACKAGE_luci-app-adguardhome=y
         CONFIG_PACKAGE_luci-app-advanced=y
         CONFIG_PACKAGE_luci-app-aria2=y
+        CONFIG_PACKAGE_luci-app-aliddns=y
+        CONFIG_PACKAGE_luci-app-ddns=y
         CONFIG_PACKAGE_luci-app-autopoweroff=y
         CONFIG_PACKAGE_luci-app-beardropper=y
         CONFIG_PACKAGE_luci-app-clash=y
@@ -175,6 +177,9 @@ jobs:
         CONFIG_PACKAGE_luci-app-wifischedule=m
         CONFIG_PACKAGE_luci-app-xlnetacc=y
         CONFIG_PACKAGE_luci-app-zerotier=y
+        CONFIG_PACKAGE_luci-app-ssr-libev-server=y
+        CONFIG_PACKAGE_luci-app-ssr-python-pro-server=y
+        CONFIG_PACKAGE_luci-app-v2ray-server=y
         CONFIG_LUCI_LANG_en=y
         EOF
         # LuCI主题:
