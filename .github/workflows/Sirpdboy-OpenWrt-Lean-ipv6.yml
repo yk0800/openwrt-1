@@ -120,7 +120,7 @@ jobs:
         # 固件空间大小:
         cat >> .config <<EOF
         CONFIG_TARGET_KERNEL_PARTSIZE=20
-        CONFIG_TARGET_ROOTFS_PARTSIZE=450
+        CONFIG_TARGET_ROOTFS_PARTSIZE=550
         CONFIG_ZSTD_OPTIMIZE_O3=y
         EOF
         # 常用LuCI插件选择:
